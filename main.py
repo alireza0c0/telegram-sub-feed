@@ -4,7 +4,7 @@ from datetime import datetime
 import os
 
 # آدرس کانال در حالت نمای عمومی
-URL = "https://t.me/s/SOSkeyNET"
+URL = "https://t.me/testconfigwithvpn"
 
 # دریافت HTML صفحه کانال
 response = requests.get(URL)

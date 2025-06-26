@@ -1,1 +1,35 @@
+name: Daily Telegram Sync
 
+on:
+  schedule:
+    - cron: '0 3 * * *'  # هر روز ساعت 3 صبح UTC (۶:۳۰ صبح ایران)
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run script
+        env:
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+          CHANNEL_NAME: ${{ secrets.CHANNEL_NAME }}
+        run: python main.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add sub.txt
+          git commit -m "Update sub.txt"
+          git push

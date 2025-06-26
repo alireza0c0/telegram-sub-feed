@@ -1,0 +1,7 @@
+services:
+  - type: cron
+    name: daily-scraper
+    schedule: "daily"
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"

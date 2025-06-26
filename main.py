@@ -1,28 +1,33 @@
 import requests
 from bs4 import BeautifulSoup
-import re
 from datetime import datetime
 import os
 
-URL = "https://t.me/s/🔗_کانال_تو_"  # ← اینو با کانالت عوض کن
+# آدرس کانال در حالت نمای عمومی
+URL = "https://t.me/s/SOSkeyNET"
 
-r = requests.get(URL)
-soup = BeautifulSoup(r.text, "html.parser")
+# دریافت HTML صفحه کانال
+response = requests.get(URL)
+soup = BeautifulSoup(response.text, "html.parser")
+
+# پیدا کردن تمام پیام‌ها
 messages = soup.find_all("div", class_="tgme_widget_message_text")
 
+# فیلتر کردن پیام‌هایی که لینک سابسکرایب دارند
 subs = []
-
 for msg in messages:
     text = msg.get_text()
     if any(proto in text for proto in ["vmess://", "vless://", "trojan://", "ss://", "http://", "https://"]):
         subs.append(text.strip())
 
-os.makedirs("public", exist_ok=True)
+# ساخت پوشه docs اگر وجود نداشت
+os.makedirs("docs", exist_ok=True)
 
-with open("public/sub.txt", "w", encoding="utf-8") as f:
+# نوشتن در فایل خروجی
+with open("docs/sub.txt", "w", encoding="utf-8") as f:
     if subs:
         f.write("\n\n".join(subs))
     else:
         f.write("# No subscription links found today\n")
 
-print(f"[{datetime.now()}] Saved {len(subs)} links to public/sub.txt")
+print(f"[{datetime.now()}] Saved {len(subs)} subscription messages to docs/sub.txt")

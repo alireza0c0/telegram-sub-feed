@@ -1,5 +1,0 @@
-# Waiting for first update
-
-git add public/sub.txt
-git commit -m "Add initial sub.txt to public folder"
-git push

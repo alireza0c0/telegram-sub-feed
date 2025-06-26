@@ -1,15 +1,28 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+from datetime import datetime
 import os
-from telethon.sync import TelegramClient
 
-api_id = int(os.getenv("API_ID"))
-api_hash = os.getenv("API_HASH")
-channel = os.getenv("CHANNEL_NAME")
+URL = "https://t.me/s/🔗_کانال_تو_"  # ← اینو با کانالت عوض کن
 
-client = TelegramClient("anon", api_id, api_hash)
+r = requests.get(URL)
+soup = BeautifulSoup(r.text, "html.parser")
+messages = soup.find_all("div", class_="tgme_widget_message_text")
 
-with client:
-    messages = client.iter_messages(channel, limit=100)
-    with open("sub.txt", "w", encoding="utf-8") as f:
-        for message in messages:
-            if message.text and "vless" in message.text:  # فیلتر بر اساس کلمه
-                f.write(message.text + "\n")
+subs = []
+
+for msg in messages:
+    text = msg.get_text()
+    if any(proto in text for proto in ["vmess://", "vless://", "trojan://", "ss://", "http://", "https://"]):
+        subs.append(text.strip())
+
+os.makedirs("public", exist_ok=True)
+
+with open("public/sub.txt", "w", encoding="utf-8") as f:
+    if subs:
+        f.write("\n\n".join(subs))
+    else:
+        f.write("# No subscription links found today\n")
+
+print(f"[{datetime.now()}] Saved {len(subs)} links to public/sub.txt")

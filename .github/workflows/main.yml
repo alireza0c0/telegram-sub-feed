@@ -2,7 +2,7 @@ name: Daily Scraper
 
 on:
   schedule:
-    - cron: "0 3 * * *"  # اجرا هر روز ساعت ۳ صبح UTC
+    - cron: "0 3 * * *"  # هر روز ساعت 3 صبح به وقت UTC (می‌تونی تغییر بدی)
   workflow_dispatch:
 
 jobs:
@@ -10,24 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: 3.11
 
     - name: Install dependencies
-      run: pip install beautifulsoup4 requests
+      run: pip install requests beautifulsoup4
 
-    - name: Run script
+    - name: Run the scraper script
       run: python main.py
 
-    - name: Commit and push
+    - name: Commit and push updated sub.txt
       run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-        git add public/sub.txt
-        git commit -m "Update subscriptions [auto]" || echo "No changes to commit"
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add docs/sub.txt
+        git commit -m "Update subscriptions [auto]"
         git push
